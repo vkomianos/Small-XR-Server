@@ -1,6 +1,6 @@
 <?php
 
-//error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ERROR | E_PARSE);
 
 /* Addition for localhost served apps -> */
 header("Access-Control-Allow-Origin: *");
@@ -14,7 +14,9 @@ require_once "./SleekDB-master/src/Store.php";
 //echo "OK";
 $userID = "";
 $position = "";
-$command = "update";
+$command = "";
+//$command = "update";
+//$command = "retrieve";
 
 $testUID = "123";
 
@@ -34,9 +36,19 @@ else
 }
 $storePositions = new \SleekDB\Store("positions", "DB");
 
+if ($command != null)
+{
+	if ($command == "update")
+		InsertUpdatePositions($userID, $position, $storePositions);
 
-if ($command == "update")
-	InsertUpdatePositions($userID, $position, $storePositions);
+	if ($command == "retrieve")
+		retrieveUsersPositions($storePositions);
+}
+else
+{
+	echo "Nothing to see here...";
+}
+
 
 
 function InsertUpdatePositions($userID, $position, $storePositions)
@@ -53,12 +65,12 @@ function InsertUpdatePositions($userID, $position, $storePositions)
 	//echo "Position of ".$userID." is found: ".$result[0]['position'];
 
 	$position = ["userID" => $userID, "position" => $position];
-	if ($result[0]['position'] != null)
+	if ($result[0]['position'] != null) // can also use function exists() - check sleekDB query docs
 	{
 		// Update
 		$result = $storePositions->createQueryBuilder()
 			->where(["userID", "=", $userID])
-			->orderBy(["_id" => "DESC"])
+			->orderBy(["_id" => "DESC"]) 
 			->getQuery()
 			->update(["position" => $position]);
 	}
@@ -70,6 +82,12 @@ function InsertUpdatePositions($userID, $position, $storePositions)
 	//$position = ["userID" => "123", "position" => "x y z"];
 	//$position = ["userID" => $_POST['userID'], "position" => $_POST['position']];
 	//$result = $storePositions->insert($position);
+}
+
+function retrieveUsersPositions($storePositions)
+{
+	$users = $storePositions->findAll();
+	print_r($users);
 }
 
 ?>
