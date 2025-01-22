@@ -71,12 +71,13 @@
 	{
 		//console.log("Position: " + position.x + "," + position.y + "," + position.z);
 		let postData = "command=update&userID="+userID+"&position='"+position.x + ","+position.y +","+position.z + "'";
-		console.log("POST data: " + postData);
-	
+		
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.open("POST", "http://localhost/multiuser-xr-server/server/index.php", true);
 		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xmlhttp.send(postData);
+		
+		console.log("POST data: " + postData);
 	}
 		
 	</script>

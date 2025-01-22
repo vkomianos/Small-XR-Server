@@ -18,7 +18,7 @@ $command = "";
 //$command = "update";
 //$command = "retrieve";
 
-$testUID = "123";
+$testUID = "1234";
 
 if (isset($_POST['command']) && isset($_POST["userID"]))
 {
@@ -33,6 +33,7 @@ else
 {
 	$userID = $testUID;
 	$position = "x y z";
+	$command = "update";
 }
 $storePositions = new \SleekDB\Store("positions", "DB");
 
@@ -56,17 +57,20 @@ function InsertUpdatePositions($userID, $position, $storePositions)
 
 	$result = $storePositions->search(["userID"], $userID, ["_id" => "DESC"]);
 	//print_r($result); 
-	//echo "Found ".count($result)." records";
+	echo "Found ".count($result)." records";
 
+/*
 	foreach ($result as $key => $value) 
 	{
 		//echo $key. " - ";
 	}
+*/
 	//echo "Position of ".$userID." is found: ".$result[0]['position'];
 
 	$position = ["userID" => $userID, "position" => $position];
 	if ($result[0]['position'] != null) // can also use function exists() - check sleekDB query docs
 	{
+		echo "Update position";
 		// Update
 		$result = $storePositions->createQueryBuilder()
 			->where(["userID", "=", $userID])
@@ -77,6 +81,7 @@ function InsertUpdatePositions($userID, $position, $storePositions)
 	else
 	{
 		// Insert
+		echo "Insert user and position";
 		$result = $storePositions->insert($position);
 	}
 	//$position = ["userID" => "123", "position" => "x y z"];
