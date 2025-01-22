@@ -106,7 +106,15 @@
 	
 	function showUsers(xhr)
 	{
-		console.log("Show users: " + xhr.responseText);
+		//console.log("Show users: " + xhr.responseText);
+		console.log("Active users: " + JSON.parse(xhr.responseText).length);
+		
+		let data = JSON.parse(xhr.responseText);
+		
+		for (let i = 0; i < data.length; i++)
+		{
+			console.log(data[i].userID + " - " + data[i].position);
+		}
 	}
 	
 		

@@ -75,7 +75,7 @@ function InsertUpdatePositions($userID, $position, $storePositions)
 */
 	//echo "Position of ".$userID." is found: ".$result[0]['position'];
 
-	$position = ["userID" => $userID, "position" => $position];
+	
 	if ($result[0]['position'] != null) // can also use function exists() - check sleekDB query docs
 	{
 		//echo "Update position";
@@ -90,7 +90,8 @@ function InsertUpdatePositions($userID, $position, $storePositions)
 	{
 		// Insert
 		//echo "Insert user and position";
-		$result = $storePositions->insert($position);
+		$userAndPosition = ["userID" => $userID, "position" => $position];
+		$result = $storePositions->insert($userAndPosition);
 	}
 	//$position = ["userID" => "123", "position" => "x y z"];
 	//$position = ["userID" => $_POST['userID'], "position" => $_POST['position']];
@@ -102,12 +103,18 @@ function retrieveUsersPositions($storePositions)
 	$users = $storePositions->findAll();
 	//print_r($users);
 	
+	echo json_encode($users);
+	
+	/*
 	foreach ($users as $key => $value) 
 	{
 		//echo $key. " - ". $value;
 		
-		print_r( $users[$key]);
+		//print_r( $users[$key]);
+		//echo $users[$key]["userID"]."-".$users[$key]["position"];
 	}
+	*/
+	
 }
 
 ?>
