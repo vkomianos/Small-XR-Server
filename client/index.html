@@ -67,6 +67,13 @@
 	
 	<script>
 	
+	const interval = setInterval(repeat, 250);
+	
+	function repeat()
+	{
+		retrieveUsersAndPositions();
+	}
+	
 	function updatePosition(position)
 	{
 		//console.log("Position: " + position.x + "," + position.y + "," + position.z);
@@ -79,6 +86,29 @@
 		
 		console.log("POST data: " + postData);
 	}
+	
+	function retrieveUsersAndPositions()
+	{
+		let postData = "command=retrieve";
+		
+		var xhr = new XMLHttpRequest();
+		
+		xhr.onreadystatechange = function()
+		{
+			if (xhr.readyState == XMLHttpRequest.DONE)
+				showUsers(xhr);
+		}
+		
+		xhr.open("POST", "http://localhost/multiuser-xr-server/server/index.php", true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(postData);
+	}
+	
+	function showUsers(xhr)
+	{
+		console.log("Show users: " + xhr.responseText);
+	}
+	
 		
 	</script>
 
