@@ -2,7 +2,7 @@
 
 A small server application for shared XR experiences. It is written with PHP and uses the SleekDB (flat file NoSQL DB) to store users' data (currently id, position and rotation).  
 
-It comes with a client written with A-Frame. 
+It comes with a client written with <a href="https://github.com/aframevr/aframe" target="new">A-Frame</a>. 
 
 ![Two users views](Test-1.gif)
 
