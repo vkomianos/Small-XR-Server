@@ -14,6 +14,7 @@ require_once "./SleekDB-master/src/Store.php";
 //echo "OK";
 $userID = "";
 $position = "";
+$rotation = "";
 $command = "";
 //$command = "update";
 //$command = "retrieve";
@@ -27,9 +28,10 @@ if (isset($_POST['command']) || isset($_POST["userID"]))
 	
 	if ($_POST['command'] == "update")
 	{
+		$command = $_POST['command'];
 		$userID = $_POST["userID"];
 		$position = $_POST["position"];
-		$command = $_POST['command'];
+		$rotation = $_POST["rotation"];
 	}
 	
 	if ($_POST['command'] == "retrieve")
@@ -48,7 +50,7 @@ else
 $storePositions = new \SleekDB\Store("positions", "DB");
 
 if ($command == "update")
-	InsertUpdatePositions($userID, $position, $storePositions);
+	InsertUpdatePositions($userID, $position, $rotation, $storePositions);
 
 if ($command == "retrieve")
 	retrieveUsersPositions($storePositions);
@@ -60,7 +62,7 @@ if ($command == "")
 }
 
 
-function InsertUpdatePositions($userID, $position, $storePositions)
+function InsertUpdatePositions($userID, $position, $rotation, $storePositions)
 {
 
 	$result = $storePositions->search(["userID"], $userID, ["_id" => "DESC"]);
@@ -84,13 +86,14 @@ function InsertUpdatePositions($userID, $position, $storePositions)
 			->where(["userID", "=", $userID])
 			->orderBy(["_id" => "DESC"]) 
 			->getQuery()
-			->update(["position" => $position]);
+			//->update(["position" => $position]);
+			->update(["position" => $position, "rotation" => $rotation]);
 	}
 	else
 	{
 		// Insert
 		//echo "Insert user and position";
-		$userAndPosition = ["userID" => $userID, "position" => $position];
+		$userAndPosition = ["userID" => $userID, "position" => $position, "rotation" => $rotation];
 		$result = $storePositions->insert($userAndPosition);
 	}
 	//$position = ["userID" => "123", "position" => "x y z"];

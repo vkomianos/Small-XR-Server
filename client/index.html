@@ -37,7 +37,8 @@
 		onKeyPress: function (event) {
           //console.log("Keypress: "+ event.key);
 		  if (event.key == 'w' || event.key == 'a' || event.key == 's' || event.key == 'd' || event.key == 'ArrowUp' || event.key == 'ArrowLeft' || event.key == 'ArrowDown' || event.key == 'ArrowRight' ) {
-           updatePosition(this.el.getAttribute('position'));
+			//updatePosition(this.el.getAttribute('position'));
+			updatePosition(this.el.getAttribute('position'), this.el.getAttribute('rotation'));
           }
         }
 		/*,
@@ -55,7 +56,7 @@
 	<body>
 		<a-scene>
 		
-			<a-entity id="gameHubCharacter" class="avatar-template" position="-4 0 -2">
+			<a-entity id="gameHubCharacter" class="avatar-template" position="-4 0 -2" visible="false">
 				
 				<a-cylinder id="torso" position="0 .9 0" height="1" radius=".3" height=".5" color="purple">
 					
@@ -118,10 +119,11 @@
 		retrieveUsersAndPositions();
 	}
 	
-	function updatePosition(position)
+	function updatePosition(position, rotation)
 	{
 		//console.log("Position: " + position.x + "," + position.y + "," + position.z);
-		let postData = "command=update&userID="+userID+"&position='"+position.x + ","+position.y +","+position.z + "'";
+		console.log(rotation);
+		let postData = "command=update&userID="+userID+"&position='"+position.x + ","+position.y +","+position.z + "'" + "&rotation='" + rotation.x + "," + rotation.y +","+ rotation.z + "'";
 		
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.open("POST", "http://localhost/multiuser-xr-server/server/index.php", true);
@@ -150,8 +152,8 @@
 	
 	function showUsers(xhr)
 	{
-		//console.log("Show users: " + xhr.responseText);
-		console.log("Active users: " + JSON.parse(xhr.responseText).length);
+		console.log("Show users: " + xhr.responseText);
+		//console.log("Active users: " + JSON.parse(xhr.responseText).length);
 		
 		let data = JSON.parse(xhr.responseText);
 		
@@ -159,10 +161,12 @@
 		{
 			//console.log(data[i].userID + " - " + data[i].position);
 			let positionArr = data[i].position.split(',');
+			let rotationArr = data[i].rotation.split(',');
 			//console.log(positionArr);
-			let positionObj = {'x': parseFloat(positionArr[0].replace(/[^0-9\.]+/g, "")), 'y': parseFloat(positionArr[1].replace(/[^0-9\.]+/g, "")), 'z': parseFloat(positionArr[2].replace(/[^0-9\.]+/g, ""))};
+			let positionObj = {'x': parseFloat(positionArr[0].replace(/[^0-9\-\.]+/g, "")), 'y': parseFloat(positionArr[1].replace(/[^0-9\-\.]+/g, "")), 'z': parseFloat(positionArr[2].replace(/[^0-9\-\.]+/g, ""))};
 			//console.log(positionObj);
-			let rotationObj = {'x': 0, 'y': 0, 'z': 0};
+			//let rotationObj = {'x': 0, 'y': 0, 'z': 0};
+			let rotationObj= {'x': parseFloat(rotationArr[0].replace(/[^0-9\-\.]+/g, "")), 'y': parseFloat(rotationArr[1].replace(/[^0-9\-\.]+/g, "")), 'z': parseFloat(rotationArr[2].replace(/[^0-9\-\.]+/g, ""))};
 			//createDynamicObject(data[i].userID, "a-cylinder", "avatar", positionObj, rotationObj);
 			createAvatar(data[i].userID, positionObj, rotationObj);
 		}
@@ -183,7 +187,7 @@
 				
 			newObject.classList.add(ofClass);
 			newObject.setAttribute('id', id);
-			newObject.setAttribute('position', {x:position.x, y:position.y, z:position.z});
+			//newObject.setAttribute('position', {x:position.x, y:position.y, z:position.z});
 			newObject.setAttribute('rotation', {x:0,y:0, z:0});
 			newObject.setAttribute('color', "red");
 			sceneEl.appendChild(newObject);
@@ -204,8 +208,10 @@
 			let newObject = document.getElementById("gameHubCharacter").cloneNode(true);	
 			newObject.classList.add("avatar");
 			newObject.setAttribute('id', id);
-			newObject.setAttribute('position', {x:position.x, y:position.y, z:position.z});
-			newObject.setAttribute('rotation', {x:0,y:0, z:0});
+			//newObject.setAttribute('position', {x:position.x, y:position.y, z:position.z});
+			newObject.setAttribute('position', {x:position.x, y:0, z:position.z}); // no height moving yet
+			newObject.setAttribute('rotation', {x:rotation.x, y:rotation.y, z:rotation.z});
+			newObject.setAttribute('visible', true);
 			//newObject.setAttribute('color', "red");
 			sceneEl.appendChild(newObject);
 		}
