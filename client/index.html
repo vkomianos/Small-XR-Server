@@ -47,12 +47,50 @@
           }
         }*/
       });
+	  
+	  
 	</script>
 	
 
 	<body>
 		<a-scene>
+		
+			<a-entity id="gameHubCharacter" class="avatar-template" position="-4 0 -2">
+				
+				<a-cylinder id="torso" position="0 .9 0" height="1" radius=".3" height=".5" color="purple">
+					
+					<a-cone id="right-foot" position="-.2 -.5 0"  radius-top=".05" radius-bottom=".2"  height=".5" color="blue" >
+					</a-cone>
+					
+					<a-cone id="left-foot" position="0.2 -.5 0" radius-top=".1"  radius-bottom=".2" height=".5" color="blue" >
+					</a-cone>
+					
+					<a-cone id="right-arm" position="-.3 0.1 0"  radius-top=".05" radius-bottom=".15"  height=".5" color="red" >
+					</a-cone>
+					
+					<a-cone id="left-arm" position="0.3 .1 0" radius-top=".1"  radius-bottom=".15" height=".5" color="red" >
+					</a-cone>
+					
+					<a-cone id="head" position="0 .65 0" radius-top=".3"  radius-bottom=".1" height=".4" color="orange" >
+					</a-cone>
+					
+					<a-entity id="face">
+						<a-sphere color="grey" radius=".04" position="-0.1 .7 .2"></a-sphere>
+						<a-sphere color="grey" radius=".04" position="0.1 .7 .2"></a-sphere>
+						
+						<a-sphere color="pink" radius=".035" position="0 .3 .28"></a-sphere>
+						<a-sphere color="pink" radius=".035" position="0 .1 .28"></a-sphere>
+						<a-sphere color="pink" radius=".035" position="0 -.1 .28"></a-sphere>
+					</a-entity >
+					
+				</a-cylinder>
+				
+			</a-entity>
+		
+		
 			<a-sky color="lightblue"></a-sky>
+			
+					
 			
 			<a-entity camera look-controls wasd-controls position="0 1.6 4" update-position >
 				<a-cursor></a-cursor>
@@ -125,7 +163,8 @@
 			let positionObj = {'x': parseFloat(positionArr[0].replace(/[^0-9\.]+/g, "")), 'y': parseFloat(positionArr[1].replace(/[^0-9\.]+/g, "")), 'z': parseFloat(positionArr[2].replace(/[^0-9\.]+/g, ""))};
 			//console.log(positionObj);
 			let rotationObj = {'x': 0, 'y': 0, 'z': 0};
-			createDynamicObject(data[i].userID, "a-cylinder", "avatar", positionObj, rotationObj);
+			//createDynamicObject(data[i].userID, "a-cylinder", "avatar", positionObj, rotationObj);
+			createAvatar(data[i].userID, positionObj, rotationObj);
 		}
 		
 	}
@@ -147,6 +186,27 @@
 			newObject.setAttribute('position', {x:position.x, y:position.y, z:position.z});
 			newObject.setAttribute('rotation', {x:0,y:0, z:0});
 			newObject.setAttribute('color', "red");
+			sceneEl.appendChild(newObject);
+		}
+	}
+	
+	function createAvatar( id="", position="", rotation="")
+	{
+		if (checkIfObjectExists(id))
+		{
+			// update object
+		}
+		else
+		{
+			// create object
+			let sceneEl = document.getElementsByTagName('a-scene')[0];
+			//let newObject = document.createElement(object);
+			let newObject = document.getElementById("gameHubCharacter").cloneNode(true);	
+			newObject.classList.add("avatar");
+			newObject.setAttribute('id', id);
+			newObject.setAttribute('position', {x:position.x, y:position.y, z:position.z});
+			newObject.setAttribute('rotation', {x:0,y:0, z:0});
+			//newObject.setAttribute('color', "red");
 			sceneEl.appendChild(newObject);
 		}
 	}
