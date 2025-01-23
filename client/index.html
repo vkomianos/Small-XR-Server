@@ -54,13 +54,19 @@
 		<a-scene>
 			<a-sky color="lightblue"></a-sky>
 			
-			<a-entity camera look-controls wasd-controls position="0 1.6 3" update-position >
-				<a-torus-knot position="0 0 -2" color="#B84A39" arc="180" p="2" q="7" radius="5" radius-tubular="0.1"></a-torus-knot>
+			<a-entity camera look-controls wasd-controls position="0 1.6 4" update-position >
 				<a-cursor></a-cursor>
 				<!--<a-text  id="msg-1" value="TEST" position="-3.5 .2 -2"></a-text>-->
 			</a-entity>
 			
-			<a-box color="red" position="0 0 -10"></a-box>
+			
+			<a-box color="rgb(88)" position="0 0 0" depth="10" width="10" height=".1" >
+				<a-box color="red" position="0 0 0" depth=".9" width=".9" height=".11"></a-box>
+				<a-box color="cyan" position="-4.5 0 -4.5" depth=".9" width=".9" height=".11"></a-box>
+				<a-box color="magenta" position="4.5 0 4.5" depth=".9" width=".9" height=".11"></a-box>
+				<a-box color="yellow" position="-4.5 0 4.5" depth=".9" width=".9" height=".11"></a-box>
+				<a-box color="black" position="4.5 0 -4.5" depth=".9" width=".9" height=".11"></a-box>
+			</a-box>
 	
 		</a-scene>
 	</body>
@@ -113,9 +119,45 @@
 		
 		for (let i = 0; i < data.length; i++)
 		{
-			console.log(data[i].userID + " - " + data[i].position);
+			//console.log(data[i].userID + " - " + data[i].position);
+			let positionArr = data[i].position.split(',');
+			//console.log(positionArr);
+			let positionObj = {'x': parseFloat(positionArr[0].replace(/[^0-9\.]+/g, "")), 'y': parseFloat(positionArr[1].replace(/[^0-9\.]+/g, "")), 'z': parseFloat(positionArr[2].replace(/[^0-9\.]+/g, ""))};
+			//console.log(positionObj);
+			let rotationObj = {'x': 0, 'y': 0, 'z': 0};
+			createDynamicObject(data[i].userID, "a-cylinder", "avatar", positionObj, rotationObj);
 		}
 		
+	}
+	
+	function createDynamicObject( id="", object="", ofClass="", position="", rotation="")
+	{
+		if (checkIfObjectExists(id))
+		{
+			// update object
+		}
+		else
+		{
+			// create object
+			let sceneEl = document.getElementsByTagName('a-scene')[0];
+			let newObject = document.createElement(object);
+				
+			newObject.classList.add(ofClass);
+			newObject.setAttribute('id', id);
+			newObject.setAttribute('position', {x:position.x, y:position.y, z:position.z});
+			newObject.setAttribute('rotation', {x:0,y:0, z:0});
+			newObject.setAttribute('color', "red");
+			sceneEl.appendChild(newObject);
+		}
+	}
+	
+	function checkIfObjectExists(id)
+	{
+		let object =  document.getElementById(id);
+		if (typeof(object) != 'undefined' && object != null)
+		{
+		  return true;
+		}
 	}
 	
 		
