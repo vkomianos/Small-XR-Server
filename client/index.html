@@ -56,9 +56,9 @@
 	<body>
 		<a-scene>
 		
-			<a-entity id="gameHubCharacter" class="avatar-template" position="-4 0 -2" visible="false">
+			<a-entity id="gameHubCharacter" class="avatar-template" position="-4 0 -2"  visible="false">
 				
-				<a-cylinder id="torso" position="0 .9 0" height="1" radius=".3" height=".5" color="purple">
+				<a-cylinder id="torso" position="0 .9 0" height="1" radius=".3" height=".5" color="purple" rotation="0 180 0">
 					
 					<a-cone id="right-foot" position="-.2 -.5 0"  radius-top=".05" radius-bottom=".2"  height=".5" color="blue" >
 					</a-cone>
@@ -199,6 +199,9 @@
 		if (checkIfObjectExists(id))
 		{
 			// update object
+			let avatar = document.getElementById(id);
+			avatar.setAttribute('position', {x:position.x, y:0, z:position.z}); // no height moving yet
+			avatar.setAttribute('rotation', {x:rotation.x, y:rotation.y, z:rotation.z});
 		}
 		else
 		{
