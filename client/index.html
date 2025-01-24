@@ -7,6 +7,24 @@
 	
 	<script>
 	
+		const serverURL = getURLs('server');
+		console.log(serverURL);
+		
+		function getURLs(param)
+		{
+			let url = window.location.href;
+			
+			let arr = url.split(/(?=\/)/g);
+			console.log(arr);
+			
+			if (param == "server")
+				return ((url.split(/(?=\/)/g).slice(0,-2))+"/server/").replace(/,/g,'');
+		
+		}
+		
+		
+		
+	
 		let userID = (Math.random() + 1).toString(36).substring(2) + (Math.random() + 1).toString(36).substring(2);
 		console.log(userID);
 	
@@ -127,7 +145,7 @@
 		let postData = "command=update&userID="+userID+"&position='"+position.x + ","+position.y +","+position.z + "'" + "&rotation='" + rotation.x + "," + rotation.y +","+ rotation.z + "'";
 		
 		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.open("POST", "http://localhost/multiuser-xr-server/server/index.php", true);
+		xmlhttp.open("POST", serverURL+"index.php", true);
 		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xmlhttp.send(postData);
 		
@@ -146,7 +164,7 @@
 				showUsers(xhr);
 		}
 		
-		xhr.open("POST", "http://localhost/multiuser-xr-server/server/index.php", true);
+		xhr.open("POST", serverURL+"index.php", true);
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhr.send(postData);
 	}
