@@ -5,7 +5,8 @@ error_reporting(E_ERROR | E_PARSE);
 session_start();
 //print_r($_SESSION);
 
-
+//require_once('config.php');
+require_once('login.php');
 
 /* Addition for localhost served apps -> */
 header("Access-Control-Allow-Origin: *");
@@ -18,7 +19,7 @@ require_once "./SleekDB-master/src/Store.php";
 
 if (!isset($_SESSION['user-id']))
 {
-	echo "No session.<br/>";
+	//echo "No session.<br/>";
 }
 
 
@@ -33,58 +34,18 @@ $command = "";
 
 //print_r($_POST);
 
-$_POST['command'] = "login";
+//$_POST['command'] = "login";
 if (isset($_POST['command']) || isset($_POST["userID"]))
 {
 	//echo "Good";
 	
+	/*
 	$_POST['command'] = "login";
 	$_POST['username'] = 'vkom';
 	$_POST['password'] = '1234';
+	*/
 	
-	if ($_POST['command'] == "login" && isset($_POST['username']) && isset($_POST['password']))
-	{
-		$storeUsers = new \SleekDB\Store("users", "DB");
-		
-		$userNameExists = $storeUsers->createQueryBuilder()
-		->where([ "username", "=", $_POST['username'] ])
-		->getQuery()->exists();
-		
-		if ($userNameExists)
-		{
-			// check password to login
-			$user = $storeUsers->createQueryBuilder()
-			->where(
-			[
-				["username", "=", $_POST['username']],
-				["password", "=", $_POST['password']]
-			])->getQuery()->exists();
-			
-			//echo $user;
-			echo "Check login ";
-			echo $user == "1" ? "true" : "false";
-			echo ".<br/>";
-			
-			if ($user == 1)
-			{
-				$_SESSION['username'] = $_POST['username'];
-				$_SESSION['session_token'] = bin2hex(random_bytes(32));
-				
-				// save session_token in DB and check on every request
-				
-				print_r($_SESSION);
-			}
-			
-		}
-		else
-		{
-			// create user and proceeed
-			$createUser = ["username" => $_POST['username'], "password" => $_POST['password']];
-			$result = $storeUsers->insert($createUser);
-			
-			echo "Create user ".print_r($result);
-		}
-	}
+	login();
 	
 	if ($_POST['command'] == "update")
 	{
@@ -110,8 +71,10 @@ else
 $storePositions = new \SleekDB\Store("positions", "DB");
 
 if ($command == "update")
+{
+	require_once('playerUpdates.php');
 	InsertUpdatePositions($userID, $position, $rotation, $storePositions);
-
+}
 if ($command == "retrieve")
 	retrieveUsersPositions($storePositions);
 
@@ -122,44 +85,6 @@ if ($command == "")
 }
 
 
-function InsertUpdatePositions($userID, $position, $rotation, $storePositions)
-{
-
-	$result = $storePositions->search(["userID"], $userID, ["_id" => "DESC"]);
-	//print_r($result); 
-	//echo "Found ".count($result)." records";
-
-/*
-	foreach ($result as $key => $value) 
-	{
-		//echo $key. " - ";
-	}
-*/
-	//echo "Position of ".$userID." is found: ".$result[0]['position'];
-
-	
-	if ($result[0]['position'] != null) // can also use function exists() - check sleekDB query docs
-	{
-		//echo "Update position";
-		// Update
-		$result = $storePositions->createQueryBuilder()
-			->where(["userID", "=", $userID])
-			->orderBy(["_id" => "DESC"]) 
-			->getQuery()
-			//->update(["position" => $position]);
-			->update(["position" => $position, "rotation" => $rotation]);
-	}
-	else
-	{
-		// Insert
-		//echo "Insert user and position";
-		$userAndPosition = ["userID" => $userID, "position" => $position, "rotation" => $rotation];
-		$result = $storePositions->insert($userAndPosition);
-	}
-	//$position = ["userID" => "123", "position" => "x y z"];
-	//$position = ["userID" => $_POST['userID'], "position" => $_POST['position']];
-	//$result = $storePositions->insert($position);
-}
 
 function retrieveUsersPositions($storePositions)
 {
