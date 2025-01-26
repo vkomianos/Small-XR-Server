@@ -56,6 +56,7 @@
           //console.log("Keypress: "+ event.key);
 		  if (event.key == 'w' || event.key == 'a' || event.key == 's' || event.key == 'd' || event.key == 'ArrowUp' || event.key == 'ArrowLeft' || event.key == 'ArrowDown' || event.key == 'ArrowRight' ) {
 			//updatePosition(this.el.getAttribute('position'));
+			console.log("We should update user's position & rotation: ");
 			updatePosition(this.el.getAttribute('position'), this.el.getAttribute('rotation'));
           }
         }
@@ -72,8 +73,8 @@
 	
 
 	<body>
-		<!--<a-scene>-->
-		<a-scene  xr-mode-ui="enabled: true; XRMode: xr;">
+		<a-scene>
+		<!--<a-scene  xr-mode-ui="enabled: true; XRMode: xr;">-->
 		
 			<a-entity id="gameHubCharacter" class="avatar-template" position="-4 0 -2"  visible="false">
 				
@@ -141,15 +142,18 @@
 	function updatePosition(position, rotation)
 	{
 		//console.log("Position: " + position.x + "," + position.y + "," + position.z);
-		console.log(rotation);
+		//console.log(rotation);
+		
 		let postData = "command=update&userID="+userID+"&position='"+position.x + ","+position.y +","+position.z + "'" + "&rotation='" + rotation.x + "," + rotation.y +","+ rotation.z + "'";
+		
+		//console.log("Before POST data: " + postData);
 		
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.open("POST", serverURL+"index.php", true);
 		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xmlhttp.send(postData);
 		
-		console.log("POST data: " + postData);
+		//console.log("After POST data: " + postData);
 	}
 	
 	function retrieveUsersAndPositions()
@@ -171,7 +175,7 @@
 	
 	function showUsers(xhr)
 	{
-		console.log("Show users: " + xhr.responseText);
+		//console.log("Show users: " + xhr.responseText);
 		//console.log("Active users: " + JSON.parse(xhr.responseText).length);
 		
 		let data = JSON.parse(xhr.responseText);
