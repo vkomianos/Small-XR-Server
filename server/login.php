@@ -28,8 +28,8 @@ function login()
 				if ($user == 1)
 				{
 					$_SESSION['username'] = $_POST['username'];
-					$_SESSION['session_token'] = bin2hex(random_bytes(32));
-					
+					//$_SESSION['session_token'] = bin2hex(random_bytes(32));
+					$_SESSION['session_token'] = createSessionToken();
 					// save session_token in DB and check on every request
 					
 					//print_r($_SESSION);
@@ -39,11 +39,17 @@ function login()
 			else
 			{
 				// create user and proceeed
+				$_SESSION['session_token'] = createSessionToken();
 				$createUser = ["username" => $_POST['username'], "password" => $_POST['password']];
 				$result = $storeUsers->insert($createUser);
 				
 				//echo "Create user ".print_r($result);
 			}
 		}
+}
+
+function createSessionToken()
+{
+	return bin2hex(random_bytes(32));
 }
 ?>
